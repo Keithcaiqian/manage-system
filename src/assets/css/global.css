@@ -4,3 +4,9 @@ html,body,#app{
     margin: 0;
     padding: 0;
 }
+.el-menu-item-group .el-menu-item-group__title{
+    display: none;
+}
+.el-menu{
+    border-right: 0!important;
+}

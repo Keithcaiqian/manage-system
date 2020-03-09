@@ -5,11 +5,11 @@
         <img src="../assets/image/登录头像.jpg" alt />
       </div>
       <el-form label-width="50px" :model="ruleForm" :rules="rules" ref="ruleForm">
-        <el-form-item label="用户" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+        <el-form-item label="用户" prop="username">
+          <el-input v-model="ruleForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="region">
-          <el-input type='password' v-model="ruleForm.region"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input type='password' v-model="ruleForm.password"></el-input>
         </el-form-item>
         <el-form-item class="btns">
           <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -24,15 +24,15 @@ export default {
   data () {
     return {
       ruleForm: {
-        name: '',
-        region: ''
+        username: '',
+        password: ''
       },
       rules: {
-        name: [
+        username: [
           { required: true, message: '请输入账户名', trigger: 'blur' },
           { min: 1, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
-        region: [
+        password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 5, max: 15, message: '长度在 5 到 15 个字符', trigger: 'blur' }
         ]
@@ -45,11 +45,11 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const { data: res } = await this.$axios.post('/login', this.ruleForm)
-          console.log(res)
           if (res.meta.status !== 200) {
             this.$Message.error('登录失败')
           } else {
             this.$Message.success('登录成功')
+            window.sessionStorage.setItem('token', res.data.token)
             this.$router.push('/home')
           }
         }
