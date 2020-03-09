@@ -91,7 +91,6 @@ export default {
     this.activePath = window.sessionStorage.getItem('activePath')
     const list = await this.$axios.get('menus').then(res => res.data.data)
     this.list = list
-    console.log(1)
   }
 }
 </script>

@@ -47,7 +47,12 @@
                 size="mini"
                 @click="editUser(scope.row)"
               ></el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUser(scope.row.id)"></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click="deleteUser(scope.row.id)"
+              ></el-button>
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -55,7 +60,12 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                <el-button
+                  type="warning"
+                  icon="el-icon-setting"
+                  size="mini"
+                  @click="allotRolesBox(scope.row)"
+                ></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -110,6 +120,25 @@
         <el-button type="primary" @click="editSubmit">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色 -->
+    <el-dialog title="分配角色" :visible.sync="rolesDialogVisible" width="30%" @close="rolesClose">
+      <div>
+        <p>当前用户：{{userInfo.username}}</p>
+        <p>当前角色：{{userInfo.role_name}}</p>
+        <el-select v-model="selRoles" placeholder="请选择">
+          <el-option
+            v-for="item in allRoles"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </div>
+      <span slot="footer">
+        <el-button @click="rolesDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="rolesSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -152,12 +181,14 @@ export default {
       userArr: [],
       dialogVisible: false,
       editDialogVisible: false,
+      rolesDialogVisible: false,
       addForm: {
         username: '',
         password: '',
         email: '',
         mobile: ''
       },
+      rolesForm: {},
       editForm: {},
       rules: {
         username: [
@@ -170,7 +201,10 @@ export default {
         ],
         email: [{ validator: validateEmail, trigger: 'blur' }],
         mobile: [{ validator: validateMobile, trigger: 'blur' }]
-      }
+      },
+      userInfo: '',
+      allRoles: [],
+      selRoles: ''
     }
   },
   methods: {
@@ -182,12 +216,12 @@ export default {
       this.dataAll = res.total
     },
     handleSizeChange (val) {
-      this.user.pagesize = val
       this.getUserData()
+      this.user.pagesize = val
     },
     handleCurrentChange (val) {
-      this.user.pagenum = val
       this.getUserData()
+      this.user.pagenum = val
     },
     // 切换用户状态
     async changeState (status) {
@@ -226,7 +260,6 @@ export default {
       this.editDialogVisible = true
       const { data: res } = await this.$axios.get('users/' + data.id)
       this.editForm = res.data
-      console.log(this.editForm)
     },
     // 修改用户提交数据
     editSubmit () {
@@ -254,11 +287,13 @@ export default {
     },
     // 删除用户
     async deleteUser (id) {
-      const result = await this.$MessageBox.confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).catch(err => err)
+      const result = await this.$MessageBox
+        .confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .catch(err => err)
       if (result === 'cancel') {
         return this.$Message.success('取消删除')
       } else {
@@ -270,14 +305,38 @@ export default {
           this.$Message.error('删除用户失败')
         }
       }
+    },
+    // 分配角色弹出框
+    async allotRolesBox (role) {
+      const { data: res } = await this.$axios.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败')
+      } else {
+        this.allRoles = res.data
+      }
+      this.rolesDialogVisible = true
+      this.userInfo = role
+    },
+    // 关闭角色弹框
+    rolesClose () {
+      this.selRoles = ''
+      this.rolesDialogVisible = false
+    },
+    // 提交角色修改
+    async rolesSubmit () {
+      const { data: res } = await this.$axios.put(`users/${this.userInfo.id}/role`, { rid: this.selRoles })
+      if (res.meta.status !== 200) {
+        return this.$Message.error('角色授权失败')
+      } else {
+        this.$Message.success('角色授权成功')
+        this.rolesDialogVisible = false
+        this.getUserData()
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-.el-breadcrumb {
-  margin-bottom: 20px;
-}
 .el-row {
   margin-bottom: 20px;
 }

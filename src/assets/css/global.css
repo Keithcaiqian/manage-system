@@ -3,6 +3,7 @@ html,body,#app{
     height: 100%;
     margin: 0;
     padding: 0;
+    min-width: 1400px;
 }
 .el-menu-item-group .el-menu-item-group__title{
     display: none;
@@ -10,3 +11,6 @@ html,body,#app{
 .el-menu{
     border-right: 0!important;
 }
+.el-breadcrumb {
+    margin-bottom: 20px;
+  }
