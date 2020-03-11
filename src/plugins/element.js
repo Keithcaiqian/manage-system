@@ -1,10 +1,11 @@
 import Vue from 'vue'
+import ZkTable from 'vue-table-with-tree-grid'
 import {
   Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItemGroup,
   MenuItem, Row, Breadcrumb, BreadcrumbItem, Card, Col, Table, TableColumn, Switch, Tooltip, Pagination,
-  Dialog, MessageBox, Tag, Tree, Select, Option
+  Dialog, MessageBox, Tag, Tree, Select, Option, Cascader
 } from 'element-ui'
-
+Vue.use(ZkTable)
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
@@ -32,5 +33,6 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Cascader)
 Vue.prototype.$Message = Message
 Vue.prototype.$MessageBox = MessageBox

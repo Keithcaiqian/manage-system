@@ -106,7 +106,6 @@ export default {
       font-size: 20px;
       color: #fff;
       align-items: center;
-      width: 300px;
       flex: none;
       img {
         height: 100%;

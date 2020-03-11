@@ -39,7 +39,7 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200px">
             <template slot-scope="scope">
               <el-button
                 type="primary"
