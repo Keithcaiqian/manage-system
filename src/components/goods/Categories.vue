@@ -189,7 +189,6 @@ export default {
     showEditCate (cate) {
       this.editForm = cate
       this.editCatedialogVisible = true
-      console.log(this.editForm)
     },
     // 编辑分类的提交
     async editCated () {
@@ -197,7 +196,6 @@ export default {
       if (res.meta.status !== 200) {
         return this.$Message.error('修改失败')
       } else {
-        console.log(res)
         this.$Message.success('修改成功')
         this.getGoodsList()
         this.editCatedialogVisible = false

@@ -37,7 +37,6 @@ export default {
     async getRightsList () {
       const { data: res } = await this.$axios.get('rights/list')
       this.rightsList = res.data
-      console.log(this.rightsList)
     }
   }
 }
