@@ -4,6 +4,7 @@ html,body,#app{
     margin: 0;
     padding: 0;
     min-width: 1280px;
+    overflow-x: hidden;
 }
 .el-menu-item-group .el-menu-item-group__title{
     display: none;
@@ -13,4 +14,7 @@ html,body,#app{
 }
 .el-breadcrumb {
     margin-bottom: 20px;
+  }
+  .ql-editor{
+    min-height: 200px;
   }
