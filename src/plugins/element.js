@@ -10,7 +10,7 @@ import {
   Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItemGroup,
   MenuItem, Row, Breadcrumb, BreadcrumbItem, Card, Col, Table, TableColumn, Switch, Tooltip, Pagination,
   Dialog, MessageBox, Tag, Tree, Select, Option, Cascader, Alert, Tabs, TabPane, Steps, Step, CheckboxGroup,
-  Checkbox, Upload
+  Checkbox, Upload, Timeline, TimelineItem
 } from 'element-ui'
 
 Vue.use(VueQuillEditor)
@@ -51,5 +51,7 @@ Vue.use(Step)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 Vue.prototype.$Message = Message
 Vue.prototype.$MessageBox = MessageBox
