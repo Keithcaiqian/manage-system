@@ -29,8 +29,18 @@
         </el-table-column>
         <el-table-column label="操作" width="130px">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" icon="el-icon-edit" ></el-button>
-            <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteGoods(scope.row.goods_id)"></el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-edit"
+              @click="editGoods(scope.row.goods_id)"
+            ></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="deleteGoods(scope.row.goods_id)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -45,6 +55,27 @@
         :total="total"
       ></el-pagination>
     </el-card>
+    <!-- 编辑商品区域 -->
+    <el-dialog title="编辑商品" :visible.sync="editDialogFormVisible">
+      <el-form :model="editForm" :rules="rules" ref="editForm" label-width="100px">
+        <el-form-item label="商品名称" prop="goods_name">
+          <el-input v-model="editForm.goods_name"></el-input>
+        </el-form-item>
+        <el-form-item label="商品价格" prop="goods_price">
+          <el-input type="number" v-model="editForm.goods_price"></el-input>
+        </el-form-item>
+        <el-form-item label="商品数量" prop="goods_number">
+          <el-input type="number" v-model="editForm.goods_number"></el-input>
+        </el-form-item>
+        <el-form-item label="商品重量" prop="goods_weight">
+          <el-input type="number" v-model="editForm.goods_weight"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="editDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEditGoods">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -58,9 +89,26 @@ export default {
       },
       //   总商品数量
       total: 0,
-      goods: []
-      // page区域
-
+      goods: [],
+      // 编辑商品
+      editGoodsId: '',
+      editDialogFormVisible: false,
+      editForm: {
+      },
+      rules: {
+        goods_name: [
+          { required: true, message: '请输入商品名称', trigger: 'blur' }
+        ],
+        goods_price: [
+          { required: true, message: '请输入商品价格', trigger: 'blur' }
+        ],
+        goods_number: [
+          { required: true, message: '请输入商品数量', trigger: 'blur' }
+        ],
+        goods_weight: [
+          { required: true, message: '请输入商品重量', trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
@@ -73,7 +121,6 @@ export default {
       })
       this.total = res.data.total
       this.goods = res.data.goods
-      console.log(res)
     },
     // 改变页码大小
     handleSizeChange (val) {
@@ -91,11 +138,13 @@ export default {
     },
     // 删除商品
     async deleteGoods (id) {
-      const result = await this.$MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).catch(err => err)
+      const result = await this.$MessageBox
+        .confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .catch(err => err)
       if (result === 'cancel') {
         return this.$Message.info('取消成功')
       } else {
@@ -111,6 +160,31 @@ export default {
     // 添加商品
     addGoods () {
       this.$router.push('/addGoods')
+    },
+    // 显示编辑商品的弹框
+    async editGoods (id) {
+      this.editGoodsId = id
+      const { data: res } = await this.$axios.get('goods/' + id)
+      this.editForm = res.data
+      console.log(this.editForm)
+      this.editDialogFormVisible = true
+    },
+    // 提交编辑的商品数据
+    submitEditGoods () {
+      this.$refs.editForm.validate(async (valid) => {
+        if (!valid) {
+          return this.$Message.info('请把内容填写完整')
+        } else {
+          const { data: res } = await this.$axios.put('goods/' + this.editGoodsId, this.editForm)
+          if (res.meta.status !== 200) {
+            return this.$Message.error('修改失败')
+          } else {
+            this.$Message.success('修改成功')
+            this.editDialogFormVisible = false
+            this.getAllGoods()
+          }
+        }
+      })
     }
   }
 }
